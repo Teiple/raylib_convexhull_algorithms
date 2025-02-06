@@ -48,7 +48,7 @@ void StackPopBack(Stack* stack){
   stack->size--;
 }
 
-void *StackPeek(Stack *stack)
+void *StackTop(Stack *stack)
 {
   if (StackIsEmpty(stack))
   {

@@ -118,6 +118,7 @@ void DListRemoveNode(DoublyLinkedList *list, DNode *node)
       list->tail = NULL;
       MemFree(node->data);
       MemFree(node);
+      list->size = 0;
       return;
     }
   }
@@ -141,6 +142,7 @@ void DListRemoveNode(DoublyLinkedList *list, DNode *node)
     }
     MemFree(node->data);
     MemFree(node);
+    list->size--;
   }
 }
 
@@ -149,7 +151,7 @@ int DListIsEmpty(const DoublyLinkedList *list)
   return (list->head == NULL && list->tail == NULL);
 }
 
-void *DListToArray(DoublyLinkedList *list, size_t elementSize, size_t *outSize)
+void *DListToArray(DoublyLinkedList *list, size_t elementSize, int *outSize)
 {
   if (DListIsEmpty(list))
   {
@@ -160,7 +162,7 @@ void *DListToArray(DoublyLinkedList *list, size_t elementSize, size_t *outSize)
   if (!array)
     return NULL;
 
-  *outSize = list->size;
+  *outSize = (int)list->size;
 
   DNode *current = list->head;
   size_t index = 0;

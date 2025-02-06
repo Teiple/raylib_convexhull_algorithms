@@ -17,7 +17,7 @@ Stack* StackNew();
 StackSNode* StackNewNode(void* data);
 void StackPushBack(Stack* stack, void* data);
 void StackPopBack(Stack* stack);
-void* StackPeek(Stack* stack);
+void* StackTop(Stack* stack);
 int StackIsEmpty(const Stack* stack);
 void StackClear(Stack* stack);
 

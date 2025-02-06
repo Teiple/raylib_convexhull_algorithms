@@ -5,6 +5,7 @@
 #include "raygui.h"
 #include "string.h"
 #include "gui_control.h"
+#include <stdlib.h>
 
 int main() 
 {
@@ -33,10 +34,10 @@ int main()
   // Variables
   const int vertexCount = 20;
   Vector3 vertices[vertexCount];
-  int vertexRandomSeed = 8367;//rand() % 10000;
-  int constructionStep = 0;
+  int vertexRandomSeed = 8742;//rand() % 10000;
   CreateRandomVertices(vertices, vertexCount, vertexRandomSeed);
   ConvexShape *convexShape = NULL;
+  int step = 0;
   GuiControlLayoutState guiControlLayoutState = InitGuiControlState();
   strcpy(guiControlLayoutState.seedEditText, TextFormat("%d", vertexRandomSeed));
 
@@ -56,10 +57,10 @@ int main()
       
       ClearConvexShape(convexShape);
       MemFree(convexShape);
-      convexShape = NULL;
+      step = 0;
+      convexShape = CreateConvexShape(vertices, vertexCount, step);
       
       strcpy(guiControlLayoutState.seedEditText, TextFormat("%d", vertexRandomSeed));
-      constructionStep = 0;
     }
     //// Apply a different seed
     if (guiControlLayoutState.seedApplyPressed){
@@ -68,22 +69,58 @@ int main()
       
       ClearConvexShape(convexShape);
       MemFree(convexShape);
-      convexShape = NULL;
-      constructionStep = 0;
+      step = 0;
+      convexShape = CreateConvexShape(vertices, vertexCount, step);
     }
-    //// Show the process
-    if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_N)){
-      if (IsKeyPressed(KEY_P)){
-        constructionStep--;
-      } else{
-        constructionStep++;
+    //// Show the final result
+    if (guiControlLayoutState.showResultPressed){
+      step = -1; // Negative step means show the final result
+      ClearConvexShape(convexShape);
+      MemFree(convexShape);
+      convexShape = CreateConvexShape(vertices, vertexCount, step);
+    }
+    //// Clear the result
+    if (guiControlLayoutState.clearPressed){
+      step = 0;
+      ClearConvexShape(convexShape);
+      MemFree(convexShape);
+      convexShape = NULL;
+    }
+    //// Step
+    // FIXME: stepSubmitted is true when clicking the text box as well
+    if (guiControlLayoutState.stepSubmitted){
+      step = TextToInteger(guiControlLayoutState.stepEditText);
+      if (step <= 0){
+        step = 0;
       }
       ClearConvexShape(convexShape);
-      convexShape = CreateConvexShapeStep(vertices, vertexCount, constructionStep);
+      MemFree(convexShape);
+      convexShape = CreateConvexShape(vertices, vertexCount, step);
+
+      strcpy(guiControlLayoutState.stepEditText, TextFormat("%d", step));
     }
+    //// Next & Prev
+    if (guiControlLayoutState.nextStepPressed){
+      step++;
+      ClearConvexShape(convexShape);
+      MemFree(convexShape);
+      convexShape = CreateConvexShape(vertices, vertexCount, step);
 
+      strcpy(guiControlLayoutState.stepEditText, TextFormat("%d", step));
+    }
+    if (guiControlLayoutState.prevStepPressed){
+      step--;
+      if (step < 0){
+        step = 0;
+      }
+      ClearConvexShape(convexShape);
+      MemFree(convexShape);
+      convexShape = CreateConvexShape(vertices, vertexCount, step);
+
+      strcpy(guiControlLayoutState.stepEditText, TextFormat("%d", step));
+    }
     //----------------------------------------------------------------------------------
-
+    
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
@@ -103,9 +140,8 @@ int main()
         DrawGrid(20, 1.0f);
       EndMode3D();
 
-      DrawVertexCoords(vertices, vertexCount, camera);
+      DrawVertexIndices(vertices, vertexCount, camera);
       DrawText(TextFormat("Seed: %d", vertexRandomSeed), 10, 40, 20, DARKGRAY);
-      DrawText(TextFormat("Step: %d", constructionStep), 10, 60, 20, DARKGRAY);
       GuiControlLayout(&guiControlLayoutState);
       
       DrawFPS(10, 10);
