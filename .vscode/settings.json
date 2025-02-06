@@ -1,0 +1,38 @@
+{
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/*.o": true,
+		"**/*.exe": true,
+	},
+	"files.associations": {
+		"*.sqlbook": "sql",
+		"*.ndjson": "jsonl",
+		"*.dbclient-js": "javascript",
+		"stdio.h": "c",
+		"convex_hull.h": "c",
+		"cstdlib": "c",
+		"double_linked_list.h": "c",
+		"array": "c",
+		"string": "c",
+		"string_view": "c",
+		"span": "c",
+		"*.m": "c",
+		"variant": "c",
+		"doubly_linked_list.h": "c",
+		"stack.h": "c",
+		"stddef.h": "c",
+		"raylib.h": "c",
+		"config.h": "c",
+		"utils.h": "c",
+		"cam_control.h": "c",
+		"rcamera.h": "c",
+		"*.tcc": "c",
+		"algorithm": "c",
+		"format": "c",
+		"charconv": "c"
+	}
+}
